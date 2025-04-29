@@ -1,66 +1,87 @@
-import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+// src/screens/MealDetailScreen.js
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import client from '../api/contentfulClient';
 
-export default function MealDetailScreen({ route }) {
-    const {mealName} = route.params;
+const MealDetailScreen = ({ route }) => {
+  const { mealType } = route.params; // e.g., 'Breakfast'
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const mealMenus = {
-        Breakfast: ['Idli', 'Poha', 'Paratha'],
-        Lunch: ['Rice', 'Dal', 'Paneer Curry'],
-        Snacks: ['Samosa', 'Tea', 'Biscuits'],
-      };
+  useEffect(() => {
+    const fetchMealData = async () => {
+      try {
+        const response = await client.getEntries({
+          content_type: 'foodappApi',
+          'fields.title': mealType,
+        });
 
-      const today = new Date().getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
-      const isNonVegDay = today === 3 || today === 5;
+        const menu = response.items[0]?.fields?.menu || [];
+        setMenuItems(menu);
+      } catch (error) {
+        console.error('Contentful fetch error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      const menuItems = mealMenus[mealName] || [];
+    fetchMealData();
+  }, [mealType]);
 
-      if (isNonVegDay && (mealName === 'Lunch' || mealName === 'Snacks')) {
-            menuItems = [...menuItems, 'Chicken Curry'];
-          }
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#2e7d32" />
+      </View>
+    );
+  }
 
-          return (
-            <View style={styles.container}>
-              <Text style={styles.title}>{mealName} Menu</Text>
-              {menuItems.map((item, index) => (
-                <Text key={index} style={styles.menuItem}>{`\u2022 ${item}`}</Text>
-              ))}
-              {isNonVegDay && (mealName === 'Lunch' || mealName === 'Snacks') && (
-                <Text style={styles.note}>* Non-veg items are shown only on Wednesday and Friday</Text>
-              )}
-            </View>
-          );
-        }
+  return (
+    <View style={styles.container}>
+      <Text style={styles.heading}>{mealType} Menu</Text>
+      <FlatList
+        data={menuItems}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.itemBox}>
+            <Text style={styles.itemText}>{item}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
+};
 
+export default MealDetailScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'light green',
-        paddingTop: 50,
-        paddingHorizontal: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'dark green',
-        marginBottom: 30,
-    },
-    subTitle: {
-        fontSize: 18,
-        color: 'green',
-    },
-    menuItem: {
-        fontSize: 18,
-        marginVertical: 5,
-        color: 'green',
-      },
-      note: {
-        marginTop: 20,
-        fontSize: 14,
-        color: 'dark green',
-        fontStyle: 'italic',
-      },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#2e7d32',
+    fontStyle: 'italic',
+  },
+  itemBox: {
+    padding: 12,
+    backgroundColor: 'lightgreen',
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  itemText: {
+    fontSize: 18,
+    color: '#333',
+    fontFamily: 'Arial',
+    fontStyle: 'italic',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

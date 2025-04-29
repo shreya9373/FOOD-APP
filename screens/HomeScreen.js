@@ -1,100 +1,88 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from "react-native";
-import { getMeals } from '../api/getMeals'; // Import the function to fetch meals from Contentful
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function HomeScreen({ navigation }) {
-  const [meals, setMeals] = useState([]);
-
-  // Fetch the meals from Contentful when the component is mounted
-  useEffect(() => {
-    const fetchMeals = async () => {
-      try {
-        const fetchedMeals = await getMeals(); // Assuming getMeals fetches data from Contentful
-        setMeals(fetchedMeals);
-      } catch (error) {
-        console.error("Error fetching meals from Contentful:", error);
-      }
-    };
-
-    fetchMeals();
-  }, []);
-
-  // Render each meal as a button
-  const renderMealButton = ({ item }) => (
-    <TouchableOpacity
-      style={styles.mealButton}
-      onPress={() => handleMealPress(item.name)} // On press, navigate to MealDetail screen
-    >
-      <Text style={styles.mealName}>{item.name}</Text>
-      <Text style={styles.mealTime}>{item.timing}</Text> {/* Show the timing for the meal */}
-    </TouchableOpacity>
-  );
-
-  const handleMealPress = (mealName) => {
-    // Navigate to MealDetail and pass the mealName as a parameter
-    navigation.navigate('MealDetail', { mealName }); 
-  };
-
+const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo.jpg')} style={styles.logo} />
-      <Text style={styles.menuText}>Welcome</Text>
-      <FlatList
-        data={meals} // Use the meals state array to render meals dynamically
-        keyExtractor={(item) => item.sys.id} // Use the Contentful sys.id as the unique key
-        renderItem={renderMealButton} // Render each meal as a button
-        contentContainerStyle={styles.listContainer}
-      />
-      <TouchableOpacity
-        style={[styles.mealButton, { backgroundColor: 'lightgreen' }]}
-        onPress={() => navigation.navigate('Feedback')}
-      >
-        <Text style={[styles.mealName, { color: 'darkgreen' }]}>Feedback</Text>
-      </TouchableOpacity>
+      <Text style={styles.title}>Food Menu</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.breakfast]}
+          onPress={() => navigation.navigate('MealDetailScreen', { mealType: 'Breakfast' })}
+        >
+          <Text style={styles.buttonText}>Breakfast</Text>
+          <Text style={styles.buttonTime}>7:00 AM - 10:00 AM</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.lunch]}
+          onPress={() => navigation.navigate('MealDetailScreen', { mealType: 'Lunch' })}
+        >
+          <Text style={styles.buttonText}>Lunch</Text>
+          <Text style={styles.buttonTime}>12:00 PM - 2:00 PM</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.snacks]}
+          onPress={() => navigation.navigate('MealDetailScreen', { mealType: 'Snacks' })}
+        >
+          <Text style={styles.buttonText}>Snacks</Text>
+          <Text style={styles.buttonTime}>4:00 PM - 6:00 PM</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'white',
-    paddingTop: 50,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
   },
-  menuText: {
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 40,
+    color: '#333',
+  },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  button: {
+    width: '90%',
+    padding: 20,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  buttonText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 30,
-    textAlign: 'center',
+    color: '#fff',
   },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  mealButton: {
-    backgroundColor: 'lightgreen',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  mealName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'darkgreen',
-    textAlign: 'center',
-  },
-  mealTime: {
+  buttonTime: {
     fontSize: 14,
-    color: '#333',
-    textAlign: 'center',
+    color: '#fff',
     marginTop: 5,
   },
-  logo: {
-    width: 150,
-    height: 30,
-    alignSelf: 'center',
-    marginBottom: 20,
+  breakfast: {
+    backgroundColor: 'lightgreen',
+  },
+  lunch: {
+    backgroundColor: 'lightgreen',
+  },
+  snacks: {
+    backgroundColor: 'lightgreen',
   },
 });
+
+export default HomeScreen;

@@ -1,8 +1,9 @@
-// src/api/contentfulClient.js
-import { createClient } from 'contentful-management';
+import {createClient} from 'contentful';
+import {CONTENTFUL_SPACE_ID,CONTENTFUL_ACCESS_TOKEN} from '@env';
 
-const contentfulClient = createClient({
-  accessToken: process.env.CONTENTFUL_MANAGEMENT_API_KEY // 🔐 paste your token here
-});
+const client = createClient({
+    space: CONTENTFUL_SPACE_ID,
+    accessToken: CONTENTFUL_ACCESS_TOKEN,
+  });
 
-export default contentfulClient;
+export default client;
