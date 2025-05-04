@@ -1,88 +1,102 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { Text, Card, Appbar } from 'react-native-paper';
+
+const meals = [
+  { type: 'Breakfast', time: '☀️ 8:30 AM - 10:00 AM' },
+  { type: 'Lunch', time: '🍛 12:30 PM - 2:00 PM' },
+  { type: 'Snacks', time: '🌙 4:30 PM - 6:00 PM' },
+];
 
 const HomeScreen = ({ navigation }) => {
+  const handleMealSelect = (mealType) => {
+    navigation.navigate('MealDetailScreen', { mealType });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Food Menu</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.breakfast]}
-          onPress={() => navigation.navigate('MealDetailScreen', { mealType: 'Breakfast' })}
-        >
-          <Text style={styles.buttonText}>Breakfast</Text>
-          <Text style={styles.buttonTime}>7:00 AM - 10:00 AM</Text>
-        </TouchableOpacity>
+      {/* App Bar */}
+      <Appbar.Header style={styles.appBar}>
+      <Appbar.Content
+        title="🍽️ Netradyne Cafeteria"
+        titleStyle={styles.appBarTitle}
+        subtitle="Today's Delight ✨"
+        subtitleStyle={styles.appBarSubtitle}
+      />
+    </Appbar.Header>
 
-        <TouchableOpacity
-          style={[styles.button, styles.lunch]}
-          onPress={() => navigation.navigate('MealDetailScreen', { mealType: 'Lunch' })}
-        >
-          <Text style={styles.buttonText}>Lunch</Text>
-          <Text style={styles.buttonTime}>12:00 PM - 2:00 PM</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button, styles.snacks]}
-          onPress={() => navigation.navigate('MealDetailScreen', { mealType: 'Snacks' })}
-        >
-          <Text style={styles.buttonText}>Snacks</Text>
-          <Text style={styles.buttonTime}>4:00 PM - 6:00 PM</Text>
-        </TouchableOpacity>
-      </View>
+
+      <FlatList
+        data={meals}
+        keyExtractor={(item) => item.type}
+        contentContainerStyle={styles.listContainer}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleMealSelect(item.type)}>
+            <Card style={styles.card}>
+              <Card.Content>
+                <Text style={styles.mealType}>{item.type}</Text>
+                <Text style={styles.timeText}>{item.time}</Text>
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 };
 
+export default HomeScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f4fef4',
+  },
+  appBar: {
+    backgroundColor: '#2e7d32',
+    elevation: 6,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    height: 100,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 32,
+  appBarTitle: {
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 40,
-    color: '#333',
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: 'serif',
   },
-  buttonContainer: {
-    width: '100%',
-    alignItems: 'center',
+  appBarSubtitle: {
+    fontSize: 16,
+    color: '#d0f0c0',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: -4,
   },
-  button: {
-    width: '90%',
+  
+  listContainer: {
     padding: 20,
-    borderRadius: 8,
-    marginBottom: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
   },
-  buttonText: {
+  card: {
+    backgroundColor: '#e1f8e7',
+    marginBottom: 16,
+    borderRadius: 16,
+    elevation: 3,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  mealType: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: '700',
+    color: '#1b5e20',
+    fontFamily: 'sans-serif-condensed',
   },
-  buttonTime: {
-    fontSize: 14,
-    color: '#fff',
-    marginTop: 5,
-  },
-  breakfast: {
-    backgroundColor: 'lightgreen',
-  },
-  lunch: {
-    backgroundColor: 'lightgreen',
-  },
-  snacks: {
-    backgroundColor: 'lightgreen',
+  timeText: {
+    fontSize: 16,
+    color: '#4d4d4d',
+    marginTop: 6,
+    fontStyle: 'italic',
   },
 });
-
-export default HomeScreen;

@@ -7,9 +7,26 @@ const Stack = createStackNavigator();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="HomeScreen">
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="MealDetailScreen" component={MealDetailScreen} />
+    <Stack.Navigator 
+      initialRouteName="HomeScreen"
+      screenOptions={{
+        headerShown: false, // This will hide the default header
+      }}
+    >
+      <Stack.Screen 
+        name="HomeScreen" 
+        component={HomeScreen}
+        options={{
+          title: 'Netradyne Cafeteria',
+        }}
+      />
+      <Stack.Screen 
+        name="MealDetailScreen" 
+        component={MealDetailScreen}
+        options={{
+          title: 'Menu',
+        }}
+      />
     </Stack.Navigator>
   );
 }
