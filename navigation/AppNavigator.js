@@ -1,7 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/HomeScreen';  // path to your HomeScreen
-import MealDetailScreen from '../screens/MealDetailScreen';  // path to your MealDetailScreen
+import HomeScreen from '../screens/HomeScreen';  
+import MealDetailScreen from '../screens/MealDetailScreen';  
+import FeedbackFormScreen from '../screens/FeedbackFormScreen';
 
 const Stack = createStackNavigator();
 
@@ -10,7 +11,7 @@ export default function AppNavigator() {
     <Stack.Navigator 
       initialRouteName="HomeScreen"
       screenOptions={{
-        headerShown: false, // This will hide the default header
+        headerShown: false, 
       }}
     >
       <Stack.Screen 
@@ -27,6 +28,12 @@ export default function AppNavigator() {
           title: 'Menu',
         }}
       />
+      <Stack.Screen
+        name="FeedbackForm"
+        options={{ headerShown: false }}
+      >
+      {(props) => <FeedbackFormScreen {...props} onClose={() => props.navigation.goBack()} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }

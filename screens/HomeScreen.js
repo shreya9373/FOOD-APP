@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Card, Appbar } from 'react-native-paper';
-
+import { View, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import { Text, Card, Appbar, Button } from 'react-native-paper';
+import FeedbackFormScreen from './FeedbackFormScreen';
 const meals = [
   { type: 'Breakfast', time: '☀️ 8:30 AM - 10:00 AM' },
   { type: 'Lunch', time: '🍛 12:30 PM - 2:00 PM' },
@@ -12,7 +12,9 @@ const HomeScreen = ({ navigation }) => {
   const handleMealSelect = (mealType) => {
     navigation.navigate('MealDetailScreen', { mealType });
   };
-
+  const handleFeedbackPress = () => {
+    navigation.navigate('FeedbackForm');
+  };
   return (
     <View style={styles.container}>
       {/* App Bar */}
@@ -42,6 +44,15 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
       />
+      {/* Feedback Button - WITHOUT ICON */}
+      <Button 
+        mode="contained" // Makes the button have a filled background
+        onPress={handleFeedbackPress}
+        style={styles.feedbackButton}
+        labelStyle={styles.feedbackButtonLabel}
+      >
+        Give Feedback
+      </Button>
     </View>
   );
 };
@@ -98,5 +109,25 @@ const styles = StyleSheet.create({
     color: '#4d4d4d',
     marginTop: 6,
     fontStyle: 'italic',
+  },
+  feedbackButton: {
+    position: 'absolute', 
+    bottom: 20,            
+    left: 20,             
+    right: 20,             
+    backgroundColor: 'lightgreen',
+    borderRadius: 10,
+    paddingVertical: 5,    
+    elevation: 6,          
+    shadowColor: '#000',   
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
+  feedbackButtonLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'darkgreen',       
+    textAlign: 'center',   
   },
 });
